@@ -90,7 +90,7 @@ export default function Form() {
                 </TouchableOpacity>
             </View>
             <Modal transparent={true} visible={isOpen}>
-                <TakePicture
+                <CameraApp
                     bairro={bairro}
                     rua={rua}
                     numero={numero}

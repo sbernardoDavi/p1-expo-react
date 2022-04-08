@@ -3,8 +3,6 @@ import { Image, Modal, StyleSheet, SafeAreaView, Text, View, TouchableOpacity } 
 import { Camera } from 'expo-camera';
 import * as MediaLibrary from 'expo-media-library';
 import * as Location from 'expo-location';
-import * as FileSystem from 'expo-file-system';
-import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 
 export default function CameraApp(props) {
 
