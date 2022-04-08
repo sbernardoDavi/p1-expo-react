@@ -1,4 +1,4 @@
-import { StyleSheet,  SafeAreaView, ScrollView, StatusBar, View } from 'react-native';
+import { SafeAreaView, ScrollView, StatusBar, View } from 'react-native';
 import Form from './src/components/Form';
 import styles from './src/Styles';
 

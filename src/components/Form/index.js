@@ -1,10 +1,13 @@
 import { useState } from "react";
-import {TextInput, StyleSheet, View, Text, TouchableOpacity, Modal, Picker, Alert } from "react-native";
+import {TextInput, StyleSheet, View, Text, TouchableOpacity, Modal, Alert } from "react-native";
+import {Picker} from "@react-native-picker/picker";
 import CameraApp from "../Camera";
+import TakePicture from "../Camera";
+import { get } from "react-native/Libraries/Utilities/PixelRatio";
 
 export default function Form() {
     
-    const [cidadeSelecionada, setCidadeSelecionada] = useState("default");
+    const [selectedValue, setSelectedValue] = useState("default");
     const [bairro, setBairro] = useState(null);
     const [rua, setRua] = useState(null);
     const [numero, setNumero] = useState(null);
@@ -14,11 +17,24 @@ export default function Form() {
 
 
     function validar() {
-        if(bairro != null && setCidadeSelecionada != "default" && rua != null && numero != null && descricao != null) {
+        if(bairro != null && setSelectedValue != "default" && rua != null && numero != null && descricao != null) {
             setIsOpen(true)
         } else {
-            Alert.alert('Preencha todos oss Campos');
+            Alert.alert('Preencha todos os Campos');
         }
+    }
+
+    function salvarDados(){
+        
+    }
+
+    function confirmarEnvio() {
+        setIsOpen(false)
+        setBairro(null)
+        setRua(null)
+        setNumero(null)
+        setDescricao(null)
+        setSelectedValue("default")
     }
   
     return (
@@ -27,8 +43,8 @@ export default function Form() {
                 <Text style={styles.text}>Informe a Cidade </Text>
                 <Picker
                     style={styles.picker}
-                    cidadeSelecionada={cidadeSelecionada}
-                    onValueChange={(itemValue, itemIndex) => setCidadeSelecionada(itemValue)}
+                    selectedValue={selectedValue}
+                    onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
                 >   
                     <Picker.Item label="          - - - -                                   v" value="default" />
                     <Picker.Item label="Vassouras" value="Vassouras" />
@@ -74,12 +90,13 @@ export default function Form() {
                 </TouchableOpacity>
             </View>
             <Modal transparent={true} visible={isOpen}>
-                <CameraApp
-                    cidadeSelecionada = {cidadeSelecionada}
-                    bairro = {bairro}
-                    rua = {rua}
-                    numero = {numero}
-                    descricao = {descricao}
+                <TakePicture
+                    bairro={bairro}
+                    rua={rua}
+                    numero={numero}
+                    descricao={descricao}
+                    cidade={setSelectedValue}
+                    confirmarEnvio = {confirmarEnvio}
                 />
         </Modal>
         </View>
@@ -93,21 +110,25 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         paddingTop: 50,
     },
+
     titleText: {
         fontSize: 30,
         color: "#F7E2E2",
         fontWeight: "bold",
     },
+
     result: {
         alignItems: "center",
         backgroundColor: "#1A132F",
         borderRadius: 50,
     },
+
     resultText: {
         fontSize: 24,
         color: "#000",
         fontWeight: "bold",
     },
+
     formContext: {
         width: '100%',
         height: 'auto',
@@ -117,12 +138,14 @@ const styles = StyleSheet.create({
         marginTop: 0,
         borderRadius: 50,
     },
+
     form: {
         width: "100%",
         height: "auto",
         marginTop: 0,
         padding: 15,
     },
+
     text: {
         paddingLeft: 20,
         fontSize: 18,
@@ -130,6 +153,7 @@ const styles = StyleSheet.create({
         padding: 5,
         color: "#010000",
     },
+
     textInput: {
         fontSize: 18,
         backgroundColor: "#010000",
@@ -154,7 +178,6 @@ const styles = StyleSheet.create({
     picker: {
         fontSize: 18,
         fontWeight: "bold",
-        backgroundColor: "#010000",
         color: "#010000",
         borderRadius: 4,
         margin: 5,

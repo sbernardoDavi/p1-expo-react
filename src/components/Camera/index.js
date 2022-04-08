@@ -4,6 +4,7 @@ import { Camera } from 'expo-camera';
 import * as MediaLibrary from 'expo-media-library';
 import * as Location from 'expo-location';
 import * as FileSystem from 'expo-file-system';
+import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 
 export default function CameraApp(props) {
 
@@ -42,6 +43,19 @@ export default function CameraApp(props) {
     return <Text>sem acesso à câmera</Text>;
   }
 
+  async function saveLocation() {
+    
+    let actualLocation = await Location.getCurrentPositionAsync({});
+    setLocation(actualLocation.coords);
+    console.log(actualLocation.coords);
+    
+    if (errorMsg) {
+      text = errorMsg;
+    } else if (location) {
+      text = JSON.stringify(location);
+    }
+  }
+
   async function take() {
     if (ref) {
       const opt = {
@@ -50,26 +64,15 @@ export default function CameraApp(props) {
         flexOrientation: true,
         forceUpOrientation: true,
       }
-      localizarUsuario();
-      const data =  await ref.current.takePictureAsync(opt);
-      setCaptured(data.uri);
-      setOpen(true);
+      saveLocation();
+      const data = await ref.current.takePictureAsync(opt);
+      setCaptured(data.uri)
+      setOpen(true)
       await MediaLibrary.saveToLibraryAsync(data.uri);
-      console.log('Localização atual: ', location)
-    }
-  }
-
-  async function localizarUsuario() {
+      console.log(data) 
     
-    let actualLocation = await Location.getCurrentPositionAsync({});
-    setLocation(actualLocation.coords);
-    
-    if (errorMsg) {
-      text = errorMsg;
-    } else if (location) {
-      text = JSON.stringify(location);
     }
-  }
+}
 
  return (
    <SafeAreaView>
@@ -95,9 +98,17 @@ export default function CameraApp(props) {
       </Camera>
       <Modal transparent={true} visible={open}>
         <View style={styles.contentPhoto}>
-          <TouchableOpacity style={styles.buttonClose} onPress={() => setOpen(false)}>
-            <Text style={styles.text}> Close </Text>
-          </TouchableOpacity>
+            <View style={styles.botoes}>
+                <TouchableOpacity style={styles.buttonClose} onPress={() => setOpen(false)}>
+                    <Text style={styles.text}> OK </Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.buttonVoltar} onPress={() => props.confirmarEnvio()}>
+                    <Text style={styles.text}> Voltar </Text>
+                </TouchableOpacity>
+            </View>
+            <View style={styles.mensagemView}>
+                    <Text style={styles.mensagem}>OBRIGADO PELA SUA CONTRIBUIÇÃO</Text>    
+            </View>
           <Image style={styles.img} source={{uri: captured}} />
         </View>
       </Modal>
@@ -171,16 +182,34 @@ const styles = StyleSheet.create({
         margin: 20,
         width: 50,
         height: 50,
-        borderRadius: 50
+        borderRadius: 50,
+        backgroundColor: 'pink',
     },
-    
-    buttonConfirm: {
+
+    buttonVoltar:{
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'green',
+        backgroundColor: '#000',
         margin: 20,
         width: 50,
         height: 50,
-        borderRadius: 50
+        borderRadius: 50,
+        backgroundColor: 'green',
+      },
+    
+    botoes:{
+        flexDirection: 'row',
+
     },
+
+    mensagemView:{
+        backgroundColor:'white',
+        padding: 10,
+    },
+
+    mensagem:{
+        fontWeight: 'bold',
+        padding: 10,
+
+    }
 });
